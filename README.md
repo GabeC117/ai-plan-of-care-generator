@@ -1,2 +1,2 @@
 # ai-plan-of-care-generator
-Generates therapy Plans of Care from evaluations using an LLM, then audits outputs with a second model that scores quality/safety (0–10).
+Evaluates multiple prompt engineering strategies across LLM models for clinical Plan of Care generation, using an automated LLM auditor to compare constrained and unconstrained outputs across structured clinical criteria.
