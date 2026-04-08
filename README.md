@@ -1,40 +1,51 @@
-# ai-plan-of-care-generator
-Evaluates multiple prompt engineering strategies across LLM models for clinical Plan of Care generation, using an automated LLM auditor to compare constrained and unconstrained outputs across structured clinical criteria.
-
-
 # AI-Assisted Plan of Care Generation & Clinical Audit System
 
 ## Overview
-This project evaluates how different prompt engineering strategies perform across multiple large language models (GPT-4o and GPT-4o-mini) when generating therapy Plans of Care from clinical evaluation notes.
-The system compares constrained and unconstrained prompting approaches and uses a secondary LLM auditor to score and analyze output quality in a high-risk healthcare documentation setting.
 
-## Problem Context
-Occupational and physical therapists often spend significant time converting evaluation notes into structured Plans of Care. This project explores whether large language models can assist in generating high-quality first drafts while maintaining safety through structured evaluation and auditing.
+A research system that benchmarks prompt engineering strategies across LLMs for generating therapy Plans of Care from clinical evaluation notes. The core contribution is a two-model pipeline — a generation model paired with a secondary LLM auditor — that enables scalable, structured quality evaluation without human review at each step.
 
-## Key Contribution
-This project introduces a two-model pipeline:
-1. A generation model creates a Plan of Care.
-2. A second LLM acts as a clinical auditor that evaluates and compares outputs.
-The auditor assigns structured scores and explanations, separating AI generation from evaluation similar to real-world AI validation workflows.
+---
 
-## System Workflow
-Patient Evaluation Notes  
-→ Prompt Strategy  
-→ LLM Generation (GPT-4o / GPT-4o-mini)  
-→ Clinical LLM Auditor  
-→ Comparative Scores and Feedback
+## Problem
 
-## Prompting Strategies Evaluated
-- Baseline Prompt
-- Poorly Structured Prompt
-- Instructional Prompt
-- Chain-of-Thought Prompting
-- Constraint-Based Prompting
-The project analyzes how reasoning structure and explicit clinical constraints influence documentation quality and safety.
+Occupational and physical therapists spend significant time converting evaluation notes into structured Plans of Care. Poor documentation quality carries real clinical risk. This project explores whether LLMs can reliably generate high-quality first drafts across varying prompt structures, and whether a secondary model can serve as a scalable auditing layer in high-stakes healthcare documentation workflows.
 
-## Automated Clinical Audit System
-Generated Plans of Care are evaluated side-by-side using an LLM configured to act as a supervising occupational therapist.
-Each output is scored across seven criteria:
+---
+
+## Product Design
+
+### Two-Model Pipeline
+
+```
+Patient Evaluation Notes
+        ↓
+  Prompt Strategy
+        ↓
+  Generation Model (GPT-4o / GPT-4o-mini)
+        ↓
+  LLM Clinical Auditor
+        ↓
+  Structured Scores + Comparative Feedback
+```
+
+The auditor model is configured to act as a supervising occupational therapist, separating generation from evaluation — mirroring real-world AI validation practices.
+
+---
+
+## Prompt Strategies Evaluated
+
+| Strategy | Description |
+|---|---|
+| Baseline | Minimal instruction prompt |
+| Poorly Structured | Intentionally ambiguous, used as a quality floor |
+| Instructional | Explicit step-by-step format guidance |
+| Chain-of-Thought | Structured clinical reasoning before output |
+| Constraint-Based | Hard safety and protocol constraints injected |
+
+---
+
+## Audit Criteria (Scored 1–5, Max 35)
+
 1. Clarity & Formatting
 2. Clinical Accuracy
 3. Protocol Adherence
@@ -43,26 +54,35 @@ Each output is scored across seven criteria:
 6. Progression / Discharge Planning
 7. Conciseness
 
-Each category receives a score from 1–5 for a total score out of 35, along with qualitative feedback comparing both models.
+Each Plan of Care is evaluated side-by-side with qualitative feedback comparing outputs across models and strategies.
+
+---
 
 ## Key Findings
-- Prompt structure significantly affects output quality.
-- Larger models produced more consistent clinical reasoning.
-- Constraint-based prompts improved safety adherence.
-- Automated auditing enables scalable evaluation of high-risk AI outputs.
 
-## Technologies Used
+- Prompt structure is the strongest driver of output quality — more impactful than model size alone
+- Constraint-based prompting produced the most consistent safety adherence across both models
+- GPT-4o showed stronger clinical reasoning coherence; GPT-4o-mini degraded faster under loosely structured prompts
+- Automated LLM auditing scales evaluation without requiring per-output clinician review
+
+---
+
+## Tech Stack
+
 - Python
-- OpenAI API
-- Large Language Models (LLMs)
-- Prompt Engineering
-- AI Evaluation Pipelines
+- OpenAI API (GPT-4o, GPT-4o-mini)
+- Prompt engineering (5 strategies)
+- LLM-as-evaluator pipeline
 
-## Note
-This project is a research prototype exploring AI-assisted clinical documentation workflows. Outputs require review by licensed healthcare professionals.
+---
 
-## Future Work
-- Incorporating clinician feedback into the audit process
-- Retrieval-Augmented Generation using clinical guidelines
-- Expanding evaluation across additional models
-- Exploring human-in-the-loop review workflows for safer deployment
+## Future Roadmap
+
+- **RAG integration** — ground generation in clinical guidelines (e.g., AOTA practice frameworks)
+- **Clinician-in-the-loop feedback** — capture licensed OT corrections to fine-tune audit scoring
+- **Model expansion** — evaluate Claude, Gemini, and open-source clinical LLMs
+- **Human-AI review workflows** — design handoff protocols for safer clinical deployment
+
+---
+
+> **Note:** This is a research prototype. All generated Plans of Care require review by a licensed healthcare professional before clinical use.
